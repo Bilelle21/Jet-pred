@@ -1,0 +1,28 @@
+[project]
+name = "jetpred"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Bilelle", email = "bilelletriki88@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "mlflow>=3.17.0",
+    "pandas>=3.0.6",
+    "scikit-learn>=1.9.1",
+    "torch>=2.14.1",
+]
+
+[project.scripts]
+jetpred = "jetpred:main"
+
+[build-system]
+requires = ["uv_build>=0.12.18,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+    "pytest>=9.1.1",
+]

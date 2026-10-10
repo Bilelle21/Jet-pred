@@ -1,0 +1,25 @@
+#  Python Environnement
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# data
+data/
+
+# Artefacts produced by training
+artifacts/
+*.pt
+*.onnx
+
+# MLflow
+mlflow.db
+mlruns/
+mlartifacts/
+
+# Notebooks
+.ipynb_checkpoints/
+
+
+.env
+.DS_Store
