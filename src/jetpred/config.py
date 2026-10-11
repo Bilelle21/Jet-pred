@@ -13,3 +13,7 @@ CLASSES = ["g", "q", "t", "w", "z"]
 SEED = 42
 TEST_SIZE = 0.15
 VAL_SIZE = 0.15
+
+# Suivi des expériences
+MLFLOW_TRACKING_URI = f"sqlite:///{PROJECT_ROOT / 'mlflow.db'}"
+EXPERIMENT_NAME = "jet-pred"
