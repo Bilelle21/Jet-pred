@@ -35,7 +35,7 @@ jobs:
         run: uv run python -m jetpred.train
 
       - name: Evaluate and register (quality gate)
-        run: uv run python -m jetpred.evaluate
+        run: uv run python -m jetpred.eval
 
       - name: Model behaviour tests
         run: uv run pytest -m model -v
