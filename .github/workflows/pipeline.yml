@@ -10,7 +10,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE: ghcr.io/ton-pseudo/jetpred-api
+  IMAGE: ghcr.io/bilelle21/jetpred-api
 
 jobs:
   train-and-publish:
@@ -32,10 +32,10 @@ jobs:
           key: openml-hls4ml-v1
 
       - name: Train
-        run: uv run python -m jetpred_mlops.train
+        run: uv run python -m jetpred.train
 
       - name: Evaluate and register (quality gate)
-        run: uv run python -m jetpred_mlops.evaluate
+        run: uv run python -m jetpred.evaluate
 
       - name: Model behaviour tests
         run: uv run pytest -m model -v
