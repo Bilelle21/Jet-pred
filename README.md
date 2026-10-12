@@ -41,7 +41,7 @@ The API is built with FastAPI, containerised with Docker and deployed on Kuberne
 
 ## 6. Monitoring
 
-![Grafana dashboard](docs/grafana.png)
+![Grafana dashboard](./docs/grafana.PNG)
 
 There are no labels in production, so accuracy can't be measured live. Besides latency and errors, I track the distribution of predicted classes and the average confidence. The confidence stays around 0.77, very close to the test accuracy, so it's a useful drift signal: if it drops, something changed in the data, even if the API still answers fast and without errors.
 
