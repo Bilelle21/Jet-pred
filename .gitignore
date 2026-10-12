@@ -1,27 +1,30 @@
-#  Python Environnement
-.venv/
+# Python
 __pycache__/
-*.pyc
+*.py[oc]
+*.egg-info/
+dist/
+wheels/
+
+# Environnement virtuel
+.venv/
+
+# Outils de développement
 .pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
 
-# data
+# Données et artefacts générés
 data/
-
-# Artefacts produced by training
 artifacts/
+build/
 *.pt
 *.onnx
 
 # MLflow
-mlflow.db
 mlruns/
 mlartifacts/
+mlflow.db
 
-# Notebooks
-.ipynb_checkpoints/
-
-
+# Secrets et fichiers locaux
 .env
 .DS_Store
-
-build/
