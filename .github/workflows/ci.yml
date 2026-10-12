@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Cache dataset
+        uses: actions/cache@v4
+        with:
+          path: data
+          key: openml-hls4ml-v1
+
+      - name: Unit, data and API tests
+        run: uv run pytest -m "not model" -v

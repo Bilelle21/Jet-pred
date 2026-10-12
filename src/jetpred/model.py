@@ -10,10 +10,12 @@ class JetClassifier(nn.Module):
         self,
         n_features=config.N_FEATURES,
         hidden_sizes=(64, 32, 32),
-        n_classes=len(config.CLASSES),
+        n_classes=None,
         dropout=0.1,
     ):
         super().__init__()
+        if n_classes is None:
+            n_classes = len(config.CLASSES)
         layers = []
         in_size = n_features
         for hidden_size in hidden_sizes:

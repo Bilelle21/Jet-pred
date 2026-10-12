@@ -14,6 +14,11 @@ SEED = 42
 TEST_SIZE = 0.15
 VAL_SIZE = 0.15
 
-# Suivi des expériences
+# Expriments
 MLFLOW_TRACKING_URI = f"sqlite:///{PROJECT_ROOT / 'mlflow.db'}"
 EXPERIMENT_NAME = "jet-pred"
+
+
+MODEL_NAME = "jet-classifier"
+MODEL_ALIAS = "champion"
+MIN_TEST_ACCURACY = 0.74

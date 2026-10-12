@@ -23,3 +23,5 @@ mlartifacts/
 
 .env
 .DS_Store
+
+build/

@@ -8,10 +8,13 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "fastapi>=0.143.0",
+    "matplotlib>=3.11.2",
     "mlflow>=3.17.0",
     "pandas>=3.0.6",
     "scikit-learn>=1.9.1",
     "torch>=2.14.1",
+    "uvicorn[standard]>=0.54.0",
 ]
 
 [project.scripts]
@@ -23,14 +26,20 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "jupyter>=1.1.1",
     "pytest>=9.1.1",
+    "ruff>=0.17.0",
 ]
 
+
+[tool.pytest.ini_options]
+markers = ["model: tests that need a registered champion model"]
+
 [[tool.uv.index]]
-name = "pytorch-cu126"
-url = "https://download.pytorch.org/whl/cu126"
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
 explicit = true
 
 [tool.uv.sources]
-torch = [{ index = "pytorch-cu126" }]
+torch = [{ index = "pytorch-cpu" }]

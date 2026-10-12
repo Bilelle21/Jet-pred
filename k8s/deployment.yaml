@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jetpred-api
+  labels:
+    app: jetpred-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: jetpred-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: jetpred-api
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: api
+          image: jetpred-api:0.1.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 24
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            periodSeconds: 5
+            failureThreshold: 2

@@ -3,8 +3,8 @@ import numpy as np
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from jetpred import config
 
+from jetpred import config
 
 
 def load_data():

@@ -1,0 +1,11 @@
+.git
+.venv
+data
+mlruns
+mlartifacts
+mlflow.db
+artifacts
+notebooks
+__pycache__
+.pytest_cache
+sample_request.json
