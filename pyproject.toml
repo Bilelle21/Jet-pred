@@ -11,7 +11,10 @@ dependencies = [
     "fastapi>=0.143.0",
     "matplotlib>=3.11.2",
     "mlflow>=3.17.0",
+    "onnx>=1.23.2",
+    "onnxruntime>=1.31.0",
     "pandas>=3.0.6",
+    "prometheus-client>=0.26.0",
     "scikit-learn>=1.9.1",
     "torch>=2.14.1",
     "uvicorn[standard]>=0.54.0",
@@ -33,13 +36,16 @@ dev = [
 ]
 
 
-[tool.pytest.ini_options]
-markers = ["model: tests that need a registered champion model"]
-
 [[tool.uv.index]]
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 explicit = true
+
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["model: tests that need a registered champion model"]
 
 [tool.uv.sources]
 torch = [{ index = "pytorch-cpu" }]

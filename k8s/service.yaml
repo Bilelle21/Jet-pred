@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: jetpred-api
+  labels:
+    app: jetpred-api
 spec:
   selector:
     app: jetpred-api

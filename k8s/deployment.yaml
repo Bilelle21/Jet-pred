@@ -23,7 +23,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: api
-          image: jetpred-api:0.1.1
+          image: jetpred-api:0.2.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

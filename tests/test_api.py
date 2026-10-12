@@ -64,3 +64,10 @@ def test_empty_batch_is_rejected(client):
 def test_oversized_batch_is_rejected(client):
     jets = [make_jet()] * (MAX_BATCH_SIZE + 1)
     assert client.post("/predict", json={"jets": jets}).status_code == 422
+
+def test_metrics_are_exposed(client):
+    client.post("/predict", json={"jets": [make_jet()]})
+    response = client.get("/metrics")
+    assert response.status_code == 200
+    assert "jetpred_predictions_total" in response.text
+    assert "jetpred_inference_seconds" in response.text

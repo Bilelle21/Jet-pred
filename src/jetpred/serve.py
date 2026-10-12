@@ -10,6 +10,13 @@ from mlflow.tracking import MlflowClient
 from pydantic import BaseModel, Field
 
 from jetpred import config
+import time
+
+from fastapi import Response
+from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
+
+from jetpred import metrics
+
 
 MAX_BATCH_SIZE = 1000
 
@@ -26,7 +33,6 @@ def load_from_registry() -> LoadedModel:
     name = os.getenv("MODEL_NAME", config.MODEL_NAME)
     alias = os.getenv("MODEL_ALIAS", config.MODEL_ALIAS)
 
-    # Resolve the alias once, then load that exact version
     version = MlflowClient().get_model_version_by_alias(name, alias).version
     model = mlflow.pyfunc.load_model(f"models:/{name}/{version}")
     feature_names = model.metadata.get_input_schema().input_names()
@@ -68,6 +74,27 @@ def create_app(loader=default_loader) -> FastAPI:
 
     app = FastAPI(title="Jet classifier", lifespan=lifespan)
 
+    @app.middleware("http")
+    async def track_requests(request: Request, call_next):
+        if request.url.path == "/metrics":
+            return await call_next(request)
+
+        start = time.perf_counter()
+        status = "500"
+        try:
+            response = await call_next(request)
+            status = str(response.status_code)
+            return response
+        finally:
+            route = request.scope.get("route")
+            path = route.path if route else "unmatched"
+            metrics.HTTP_REQUESTS.labels(request.method, path, status).inc()
+            metrics.HTTP_LATENCY.labels(request.method, path).observe(time.perf_counter() - start)
+
+    @app.get("/metrics", include_in_schema=False)
+    def prometheus_metrics():
+        return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
     @app.get("/health")
     def health():
         return {"status": "ok"}
@@ -94,7 +121,10 @@ def create_app(loader=default_loader) -> FastAPI:
 
         # The model signature expects float32; JSON numbers arrive as float64
         frame = pd.DataFrame(payload.jets)[loaded.feature_names].astype("float32")
+        start = time.perf_counter()
         output = loaded.model.predict(frame)
+        metrics.INFERENCE_LATENCY.observe(time.perf_counter() - start)
+        metrics.BATCH_SIZE.observe(len(frame))
 
         prob_columns = [c for c in output.columns if c.startswith("prob_")]
         predictions = [
@@ -104,6 +134,10 @@ def create_app(loader=default_loader) -> FastAPI:
             )
             for _, row in output.iterrows()
         ]
+        for p in predictions:
+            metrics.PREDICTIONS.labels(p.prediction, loaded.version).inc()
+            metrics.PREDICTION_CONFIDENCE.observe(max(p.probabilities.values()))
+            
         return PredictResponse(model_version=loaded.version, predictions=predictions)
 
     return app
