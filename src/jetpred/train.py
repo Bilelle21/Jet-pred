@@ -26,23 +26,23 @@ def make_loader(X, y, batch_size, shuffle):
 
 
 def train_one_epoch(model, loader, loss_fn, optimizer, device):
-    model.train()                                   # active le dropout
+    model.train()                              
     total_loss, n = 0.0, 0
     for X_batch, y_batch in loader:
         X_batch, y_batch = X_batch.to(device), y_batch.to(device)
-        optimizer.zero_grad()                       # 1. remise à zéro des gradients
-        logits = model(X_batch)                     # 2. passe avant
+        optimizer.zero_grad()                      
+        logits = model(X_batch)                    
         loss = loss_fn(logits, y_batch)
-        loss.backward()                             # 3. rétropropagation
-        optimizer.step()                            # 4. mise à jour des poids
+        loss.backward()                          
+        optimizer.step()                           
         total_loss += loss.item() * len(X_batch)
         n += len(X_batch)
     return total_loss / n
 
 
-@torch.no_grad()                                    # pas de gradients en évaluation
+@torch.no_grad()                                  
 def evaluate(model, loader, loss_fn, device):
-    model.eval()                                    # désactive le dropout
+    model.eval()                                   
     total_loss, correct, n = 0.0, 0, 0
     for X_batch, y_batch in loader:
         X_batch, y_batch = X_batch.to(device), y_batch.to(device)
@@ -78,7 +78,7 @@ def main():
     mlflow.set_experiment(config.EXPERIMENT_NAME)
 
     with mlflow.start_run():
-        mlflow.log_params(vars(args))               # hyperparamètres de ce run
+        mlflow.log_params(vars(args))             
         mlflow.log_param("device", device)
 
         best_val_loss = float("inf")
@@ -89,7 +89,6 @@ def main():
             train_loss = train_one_epoch(model, train_loader, loss_fn, optimizer, device)
             val_loss, val_acc = evaluate(model, val_loader, loss_fn, device)
 
-            # Métriques enregistrées à chaque époque : MLflow tracera les courbes
             mlflow.log_metrics(
                 {"train_loss": train_loss, "val_loss": val_loss, "val_accuracy": val_acc},
                 step=epoch,
@@ -97,7 +96,6 @@ def main():
             print(f"Epoch {epoch:02d} | train_loss={train_loss:.4f} | "
                   f"val_loss={val_loss:.4f} | val_acc={val_acc:.4f}")
 
-            # Arrêt anticipé : on sauvegarde le meilleur modèle selon la validation
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 epochs_without_improvement = 0
@@ -110,8 +108,8 @@ def main():
 
         mlflow.log_metric("best_val_loss", best_val_loss)
         scaler_path = save_scaler(data["scaler"])
-        mlflow.log_artifact(str(model_path))        # poids du meilleur modèle
-        mlflow.log_artifact(str(scaler_path))       # scaler indispensable à l'inférence
+        mlflow.log_artifact(str(model_path))      
+        mlflow.log_artifact(str(scaler_path))     
 
 
 if __name__ == "__main__":
