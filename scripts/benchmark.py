@@ -75,11 +75,11 @@ def main():
             n_iter = 200 if batch_size < 1000 else 50
 
             candidates = {
-                "mlflow_pyfunc": lambda: served.predict(frame),
-                "pyfunc_no_schema": lambda: inner.predict(None, frame),
-                "torch": lambda: torch_model(tensor),
-                "onnx_fp32": lambda: sessions["onnx_fp32"].run(None, {"input": array}),
-                "onnx_int8": lambda: sessions["onnx_int8"].run(None, {"input": array}),
+                "mlflow_pyfunc": lambda f=frame: served.predict(f),
+                "pyfunc_no_schema": lambda f=frame: inner.predict(None, f),
+                "torch": lambda t=tensor: torch_model(t),
+                "onnx_fp32": lambda a=array: sessions["onnx_fp32"].run(None, {"input": a}),
+                "onnx_int8": lambda a=array: sessions["onnx_int8"].run(None, {"input": a}),
             }
             for name, fn in candidates.items():
                 median, p95 = time_calls(fn, n_iter)

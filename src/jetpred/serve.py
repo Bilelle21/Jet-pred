@@ -1,22 +1,17 @@
 import os
+import time
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
 import mlflow
 import pandas as pd
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from mlflow.tracking import MlflowClient
+from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from pydantic import BaseModel, Field
 
-from jetpred import config
-import time
-
-from fastapi import Response
-from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
-
-from jetpred import metrics
-
+from jetpred import config, metrics
 
 MAX_BATCH_SIZE = 1000
 
